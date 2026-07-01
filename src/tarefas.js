@@ -56,24 +56,45 @@ app.patch("/atualizar/:codigo", (req, res) => {
     if (!Tarefa) {
       return res.status(404).json({ message: "Tarefa não encontrada." });
     }
-    const { novotitulo, novodescricao, novoresponsavel, novodataCriacao, novoprazo, novostatus, novoprioridade } = req.body;
-    if (!novotitulo || !novodescricao || !novoresponsavel || !novodataCriacao || !novoprazo || !novostatus || !novoprioridade) {
+    const { novoTitulo, novoDescricao, novoResponsavel, novodataCriacao, novoPrazo, novoStatus, novoPrioridade } = req.body;
+    if (!novoTitulo || !novoDescricao || !novoResponsavel || !novodataCriacao || !novoPrazo || !novoStatus || !novoPrioridade) {
       return res.status(400).json({ message: "Todos os campos são obrigatórios." });
     }
-    Tarefa.titulo = novotitulo;
-    Tarefa.descricao = novodescricao;
-    Tarefa.responsavel = novoresponsavel;
-    Tarefa.dataCriacao = novodataCriacao;
-    Tarefa.prazo = novoprazo;
-    Tarefa.status = novostatus;
-    Tarefa.prioridade = novoprioridade;
+    Tarefa.titulo = novoTitulo || Tarefa.titulo;
+    Tarefa.descricao = novoDescricao || Tarefa.descricao;
+    Tarefa.responsavel = novoResponsavel || Tarefa.responsavel;
+    Tarefa.dataCriacao = novodataCriacao || Tarefa.dataCriacao;
+    Tarefa.prazo = novoPrazo || Tarefa.prazo;
+    Tarefa.status = novoStatus || Tarefa.status;
+    Tarefa.prioridade = novoPrioridade || Tarefa.prioridade;
     res.status(200).json({ message: "Tarefa atualizada com sucesso." });
   } catch (error) {
     res.status(500).json({ message: "Erro interno do servidor." });
   }
 });
-app
-
+app.put("/atualizar/:codigo", (req, res) => {
+  try {
+    const codigo = req.params.codigo;
+    const tarefa = tarefas.find((tarefa) => tarefa.codigo === codigo);
+    if (!tarefa) {
+      return res.status(404).json({ message: "Tarefa não encontrada." });
+    }
+    const { novoTitulo, novoDescricao, novoResponsavel, novodataCriacao, novoPrazo, novoStatus, novoPrioridade } = req.body;
+    if (!novoTitulo || !novoDescricao || !novoResponsavel || !novodataCriacao || !novoPrazo || !novoStatus || !novoPrioridade) {
+      return res.status(400).json({ message: "Todos os campos são obrigatórios." });
+    }
+    tarefa.titulo = novoTitulo;
+    tarefa.descricao = novoDescricao;
+    tarefa.responsavel = novoResponsavel;
+    tarefa.dataCriacao = novodataCriacao;
+    tarefa.prazo = novoPrazo;
+    tarefa.status = novoStatus;
+    tarefa.prioridade = novoPrioridade;
+    res.status(200).json({ message: "Tarefa atualizada com sucesso." });
+  } catch (error) {
+    res.status(500).json({ message: "Erro interno do servidor." });
+  }
+});
 app.delete("/excluir/:codigo", (req, res) => {
   try {
     const codigo = req.params.codigo;
