@@ -5,7 +5,7 @@
   "main": "atvalunos.js",
   "type": "module",
   "scripts": {
-    "start": "node --watch src/atvalunos.js"
+    "start": "node --watch src/tarefas.js"
   },
   "keywords": [],
   "author": "",

@@ -11,10 +11,10 @@ const porta = process.env.PORTA;
 
 const tarefas = [];
 
-app.get("/tarefas", (req, res) => {
+app.get("/listar", (req, res) => {
   try{
     if (tarefas.length === 0) {
-      return res.status(404).json({ message: "Nenhuma foi cadastrada." });
+      return res.status(404).json({ message: "Nenhuma Tarefa cadastrada." });
   }
   res.status(200).json(tarefas);
 } catch (error) {
@@ -36,6 +36,19 @@ app.post("/cadastrar", (req, res) => {
     res.status(500).json({ message: "Erro interno do servidor." });
   }
 });
+app.get("/listar/:codigo", (req, res) => {
+  try {
+    const codigo = req.params.codigo;
+    const tarefa = tarefas.find((tarefa) => tarefa.codigo === codigo);
+    if (!tarefa) {
+      return res.status(404).json({ message: "Tarefa não encontrada." });
+    }
+    res.status(200).json(tarefa);
+  } catch (error) {
+    res.status(500).json({ message: "Erro interno do servidor." });
+  }
+});
+
 app.patch("/atualizar/:codigo", (req, res) => {
   try {
     const codigo = req.params.codigo;
