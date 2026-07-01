@@ -11,6 +11,10 @@ const porta = process.env.PORTA;
 
 const tarefas = [];
 
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "Bem-vindo à API de Tarefas!", status: "OK", date: new Date.now() });
+});
+
 app.get("/listar", (req, res) => {
   try{
     if (tarefas.length === 0) {
