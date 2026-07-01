@@ -12,8 +12,11 @@ const porta = process.env.PORTA;
 const tarefas = [];
 
 app.get("/", (req, res) => {
-  res.status(200).json({ message: "Bem-vindo à API de Tarefas!", status: "OK", date: new Date.now() });
-});
+  try {
+  res.status(200).json({ message: "Bem-vindo à API de Tarefas!", status: "OK" , date: new Date().toLocaleString("pt-BR", {timeZone: "America/Recife"})});
+} catch (error) {
+  res.status(500).json({ message: "Erro ao iniciar a API." });
+}});
 
 app.get("/listar", (req, res) => {
   try{
