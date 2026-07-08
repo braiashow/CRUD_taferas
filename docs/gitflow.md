@@ -120,11 +120,11 @@ Branches de trabalho são temporárias. Elas existem para resolver uma tarefa es
 
 ### `feature/*`
 
-Use para novas funcionalidades.
-
-```bash
-git checkout develop
-git pull origin develop
+Use para novas funcionalidades. 
+ 
+```bash 
+git checkout develop 
+git pull origin develop 
 git checkout -b feature/user-authentication
 ```
 
