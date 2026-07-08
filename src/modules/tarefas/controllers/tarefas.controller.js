@@ -41,7 +41,7 @@ class TarefaController {
     } catch (error) {
       res.status(500).json({ mensagem: "Erro interno do servidor." });
     }
-  }
+}
   static listarTodos(req, res) {
     try {
       const tarefa = TarefaModel.listarTodos();
@@ -64,7 +64,7 @@ static listarPorCodigo(req, res) {
     } catch (error) {
       res.status(500).json({ mensagem: "Erro interno do servidor." });
     }
-  }
+}
 static atualizarTotal(req, res) { 
     try {
         const codigo = req.params.codigo;
@@ -76,15 +76,32 @@ static atualizarTotal(req, res) {
     }
 
 }
-static atualizarParcial(req, res) {
-try {
-    const codigo = req.params.codigo;
-    const { novoTitulo, novoDescricao, novoResponsavel, novodataCriacao, novoPrazo, novoStatus, novoPrioridade } = req.body;
-    const tarefa = TarefaModel.atualizarParcial(codigo, novoTitulo, novoDescricao, novoResponsavel, novodataCriacao, novoPrazo, novoStatus, novoPrioridade)
-    res.status(200).json(tarefa)
-} catch (error) {
-    res.status(500).json({ mensagem: "Erro ao atualizar tarefa." });
-        }
+static atualizarParcial(codigo, nome, descricao, responsavel, dataCriacao, prazo, status, prioridade) {
+  tarefa.nome = nome || tarefa.nome;
+  tarefa.descricao = descricao || tarefa.descricao;
+  tarefa.responsavel = responsavel || tarefa.responsavel;
+  tarefa.dataCriacao = dataCriacao || tarefa.dataCriacao;
+  tarefa.prazo = prazo || tarefa.prazo;
+  tarefa.status = status || tarefa.status;
+  tarefa.prioridade = prioridade || tarefa.prioridade;
+  return tarefa;
+}
+static excluirTodos(req, res) {
+    try {
+        TarefaModel.excluirTodos()
+        res.status(200).json({ mensagem: "Tarefa excluída com sucesso." });
+    } catch (error) {
+        res.status(500).json({ mensagem: "Erro ao excluir tarefa." });
     }
 }
-
+static excluirPorCodigo(req, res) {
+  try {
+    const codigo = req.params.codigo;
+    TarefaModel.excluirPorCodigo()
+    res.status(200).json({ mensagem: "Tarefa excluída com sucesso." })
+  } catch (error) {
+    res.status(500).json({ mensagem: "Erro ao excluir tarefa." })
+  }
+}
+}
+export default TarefaController

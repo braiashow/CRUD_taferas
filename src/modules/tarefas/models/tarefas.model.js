@@ -32,11 +32,18 @@ class TarefaModel {
         tarefa.prioridade = novoPrioridade
         return tarefa
     }
-    static excluirTodos(codigo){
-        const index = tarefas.findIndex(tarefa => tarefa.codigo === codigo);
-        if (index !== -1) {
-            tarefas.splice(index, 1);
+    static excluirPorCodigo(){
+     
+        const index = tarefas.findIndex(tarefa => tarefa.codigo === codigo)
+        if(index !== -1){
+            tarefas.splice(index, 1)
+            return null
         }
+        const tarefaExcluida = tarefas.splice[index, 1]
+        return tarefaExcluida[0]
+    }
+    static excluirTodos(){
+        tarefas.length = 0
     }
     static atualizarParcial(codigo, novoTitulo, novoDescricao, novoResponsavel, novodataCriacao, novoPrazo, novoStatus, novoPrioridade){
         const tarefa = TarefaModel.listarPorCodigo(codigo)
