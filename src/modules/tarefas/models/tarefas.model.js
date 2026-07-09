@@ -32,16 +32,20 @@ class TarefaModel {
         tarefa.prioridade = novoPrioridade
         return tarefa
     }
-    static excluirPorCodigo(){
-     
-        const index = tarefas.findIndex(tarefa => tarefa.codigo === codigo)
-        if(index !== -1){
-            tarefas.splice(index, 1)
-            return null
-        }
-        const tarefaExcluida = tarefas.splice[index, 1]
-        return tarefaExcluida[0]
-    }
+
+
+static excluirPorCodigo(codigo) {
+  const index = tarefas.findIndex(tarefa => String(tarefa.codigo) === String(codigo));
+
+  if (index === -1) {
+    return null;
+  }
+
+  const tarefaExcluida = tarefas.splice(index, 1)[0];
+  return tarefaExcluida;
+}
+
+
     static excluirTodos(){
         tarefas.length = 0
     }

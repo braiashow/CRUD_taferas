@@ -34,4 +34,3 @@ O projeto possui uma API com as seguintes funcionalidades:
 
 ```bash
 git clone <url-do-repositorio>
-npm start
