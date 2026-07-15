@@ -13,6 +13,6 @@ router.patch("/atualizar/parcial/:codigo", TarefaController.atualizarParcial);
 
 router.delete("/excluir/:codigo", TarefaController.excluirPorCodigo);
 
-router.delete("/excluir", TarefaController.excluirTodos);
+router.delete("/excluir/todos", TarefaController.excluirTodos);
 
 export default router;

@@ -1,85 +1,196 @@
-import tarefas from "../../../config/datase.js";
+import conexao from "../../../config/datase.js";
+
 class TarefaModel {
-    constructor(titulo, descricao, codigo, responsavel, dataCriacao, prazo, status, prioridade){
-        this.titulo = titulo;
-        this.descricao = descricao;
-        this.codigo = codigo;
-        this.responsavel = responsavel;
-        this.dataCriacao = dataCriacao;
-        this.prazo = prazo;
-        this.status = status;
-        this.prioridade = prioridade;
-    }
-    static cadastrar(titulo, descricao, codigo, responsavel, dataCriacao, prazo, status, prioridade){
-        const dados ={
-            titulo, descricao, codigo, responsavel, dataCriacao, prazo, status, prioridade,}
-        tarefas.push(dados)
-    }
-    static listarTodos(){
-        return tarefas
-    }
-    static listarPorCodigo(codigo){
-        return tarefas.find(tarefa => tarefa.codigo === codigo)
-    }
-    static atualizar(codigo, novoTitulo, novoDescricao, novoResponsavel, novodataCriacao, novoPrazo, novoStatus, novoPrioridade){
-        const tarefa = TarefaModel.listarPorCodigo(codigo)
-        tarefa.titulo = novoTitulo
-        tarefa.descricao = novoDescricao
-        tarefa.responsavel = novoResponsavel
-        tarefa.dataCriacao = novodataCriacao
-        tarefa.prazo = novoPrazo
-        tarefa.status = novoStatus
-        tarefa.prioridade = novoPrioridade
-        return tarefa
-    }
-
-
-static excluirPorCodigo(codigo) {
-  const index = tarefas.findIndex(tarefa => String(tarefa.codigo) === String(codigo));
-
-  if (index === -1) {
-    return null;
+  constructor(
+    titulo,
+    descricao,
+    codigo,
+    responsavel,
+    dataCriacao,
+    prazo,
+    status,
+    prioridade,
+  ) {
+    this.titulo = titulo;
+    this.descricao = descricao;
+    this.codigo = codigo;
+    this.responsavel = responsavel;
+    this.dataCriacao = dataCriacao;
+    this.prazo = prazo;
+    this.status = status;
+    this.prioridade = prioridade;
   }
 
-  const tarefaExcluida = tarefas.splice(index, 1)[0];
-  return tarefaExcluida;
+  static async cadastrar(
+    titulo,
+    descricao,
+    codigo,
+    responsavel,
+    dataCriacao,
+    prazo,
+    status,
+    prioridade,
+  ) {
+    const dados = [
+      titulo,
+      descricao,
+      codigo,
+      responsavel,
+      dataCriacao,
+      prazo,
+      status,
+      prioridade,
+    ];
+
+    const query = `
+      INSERT INTO tarefa (
+        titulo,
+        descricao,
+        codigo,
+        responsavel,
+        dataCriacao,
+        prazo,
+        status,
+        prioridade)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      RETURNING *
+    `;
+
+    const resultado = await conexao.query(query, dados);
+
+    return resultado.rows;
+  }
+
+  static async listarTodos() {
+    const query = `
+      SELECT *
+      FROM tarefa
+      ORDER BY codigo
+    `;
+
+    const resultado = await conexao.query(query);
+
+    return resultado.rows;
+  }
+
+  static async listarPorCodigo(codigo) {
+    const dados = [codigo];
+
+    const query = `
+      SELECT *
+      FROM tarefa
+      WHERE codigo = $1
+    `;
+
+    const resultado = await conexao.query(query, dados);
+
+    return resultado.rows;
+  }
+
+  static async atualizar(
+    codigo,
+    titulo,
+    descricao,
+    responsavel,
+    dataCriacao,
+    prazo,
+    status,
+    prioridade,
+  ) {
+    const dados = [
+      titulo,
+      descricao,
+      responsavel,
+      dataCriacao,
+      prazo,
+      status,
+      prioridade,
+      codigo,
+    ];
+
+    const query = `
+  INSERT INTO tarefa (
+    titulo,
+    descricao,
+    codigo,
+    responsavel,
+    dataCriacao,
+    prazo,
+    status,
+    prioridade
+  )
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+  RETURNING *
+`;
+    const resultado = await conexao.query(query, dados);
+
+    return resultado.rows;
+  }
+
+  static async atualizarParcial(
+    codigo,
+    titulo,
+    descricao,
+    responsavel,
+    dataCriacao,
+    prazo,
+    status,
+    prioridade,
+  ) {
+    const dados = [
+      titulo,
+      descricao,
+      responsavel,
+      dataCriacao,
+      prazo,
+      status,
+      prioridade,
+      codigo,
+    ];
+
+    const query = `
+      UPDATE tarefa
+      SET
+        titulo = COALESCE($1, titulo),
+        descricao = COALESCE($2, descricao),
+        responsavel = COALESCE($3, responsavel),
+        data_criacao = COALESCE($4, dataCriacao),
+        prazo = COALESCE($5, prazo),
+        status = COALESCE($6, status),
+        prioridade = COALESCE($7, prioridade)
+      WHERE codigo = $8
+      RETURNING *
+    `;
+
+    const resultado = await conexao.query(query, dados);
+
+    return resultado.rows;
+  }
+
+  static async excluirPorCodigo(codigo) {
+    const dados = [codigo];
+
+    const query = `
+      DELETE FROM tarefa
+      WHERE codigo = $1
+      RETURNING *
+    `;
+
+    const resultado = await conexao.query(query, dados);
+
+    return resultado.rows;
+  }
+
+  static async excluirTodos() {
+    const query = `
+      DELETE FROM tarefa
+      RETURNING *
+    `;
+
+    const resultado = await conexao.query(query);
+
+    return resultado.rows;
+  }
 }
 
-
-    static excluirTodos(){
-        tarefas.length = 0
-    }
-    static atualizarParcial(codigo, novoTitulo, novoDescricao, novoResponsavel, novodataCriacao, novoPrazo, novoStatus, novoPrioridade){
-        const tarefa = TarefaModel.listarPorCodigo(codigo)
-
-        if(!tarefa){
-            return null
-        }
-        tarefa.titulo = novoTitulo || tarefa.titulo
-        tarefa.descricao = novoDescricao || tarefa.descricao
-        tarefa.responsavel = novoResponsavel || tarefa.responsavel
-        tarefa.dataCriacao = novodataCriacao || tarefa.dataCriacao
-        tarefa.prazo = novoPrazo || tarefa.prazo
-        tarefa.status = novoStatus || tarefa.status
-        tarefa.prioridade = novoPrioridade || tarefa.prioridade
-
-        return tarefa
-
-}    static atualizarTotal(codigo, novoTitulo, novoDescricao, novoResponsavel, novodataCriacao, novoPrazo, novoStatus, novoPrioridade){
-       const tarefa = TarefaModel.listarPorCodigo(codigo)
-
-       if(!tarefa){
-            return null
-       }
-       tarefa.titulo = novoTitulo
-       tarefa.descricao = novoDescricao
-       tarefa.responsavel = novoResponsavel
-       tarefa.dataCriacao = novodataCriacao
-       tarefa.prazo = novoPrazo
-       tarefa.status = novoStatus
-       tarefa.prioridade = novoPrioridade
-
-       return tarefa
-}}
-
-export default TarefaModel
+export default TarefaModel;
